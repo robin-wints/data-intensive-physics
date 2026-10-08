@@ -1,8 +1,13 @@
+import os
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
+
 import sys
 import time
 from numpy import sqrt
 
-def main( nmax ):
+def main(nmax):
     pibyfour = 0.0
     dx = 1.0 / nmax
     

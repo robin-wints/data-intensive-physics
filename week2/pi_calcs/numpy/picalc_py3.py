@@ -1,3 +1,8 @@
+import os
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
+
 import sys
 import time
 import numpy as np
@@ -9,12 +14,12 @@ def main( nmax ):
     dx = 1.0 / nmax
     chunk = min(100000,nmax)
     
+    idx = np.linspace(0,chunk*dx,num=chunk,endpoint=False)
     
     initial = time.time()
     
     for i in range(0,nmax,chunk):
-        idx = np.linspace(i*dx,(i+chunk)*dx,num=chunk,endpoint=False)
-        temp1 = np.sqrt(1-idx**2)
+        temp1 = np.sqrt(1-(i*dx+idx)**2)
         pibyfour += np.sum(temp1)
     
     final = time.time()
