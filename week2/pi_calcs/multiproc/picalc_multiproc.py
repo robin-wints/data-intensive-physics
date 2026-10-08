@@ -1,8 +1,9 @@
 # cpu_bound_task.py
 import sys
+import os
+import csv
 import time
 import multiprocessing
-#import numpy as np
 from math import sqrt
 
 def heavy_calculation(nmax,results,slice,istart,iend):
@@ -15,7 +16,7 @@ def heavy_calculation(nmax,results,slice,istart,iend):
     results[slice] = pibyfour
     
     
-def main(iterations,num_procs):
+def main(iterations,num_procs,filename):
     results = multiprocessing.Array('d',range(num_procs))
     calculations_per_proc = int(iterations//num_procs)
     remainder = int(iterations%num_procs)
@@ -39,14 +40,33 @@ def main(iterations,num_procs):
     for proc in procs:
         proc.join()
 
+    pi = sum(results)*4/iterations
+
     end_time = time.time()
-    print(f"Pi = {sum(results)*4/iterations:} Iterations: {iterations:d} Execution time: {end_time - start_time:9.7f} seconds, {num_procs} procs")
+    ex_time = end_time-start_time 
+
+    exists =  os.path.isfile(filename)
+    with open(filename, "a", newline="") as f:
+        writer = csv.writer(f)
+
+        if not exists:
+            writer.writerow(['n_procs', 'pi', 'time'])
+        
+        writer.writerow([num_procs, pi, ex_time])
+
+    print(f"Pi = {pi:} Iterations: {iterations:d} Execution time: {ex_time:9.7f} seconds, {num_procs} procs")
 
 if __name__ == "__main__":
     if int(len(sys.argv)) == 3: # total number of arguments to python
         iterations = int(sys.argv[1])
         procs = int(sys.argv[2])
-        result = main(iterations,procs)
+        filename = './info.csv'
+        result = main(iterations,procs,filename)
+    elif int(len(sys.argv)) == 4: # total number of arguments to python
+        iterations = int(sys.argv[1])
+        procs = int(sys.argv[2])
+        filename = sys.argv[3]
+        result = main(iterations,procs,filename)
     else:
-        print("Usage: python {} <ITERATIONS> <NUMPROCS>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <NUMPROCS> <FILENAME>".format(sys.argv[0]))
 

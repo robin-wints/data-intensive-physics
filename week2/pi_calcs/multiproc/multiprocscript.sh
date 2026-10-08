@@ -20,11 +20,7 @@ mamba activate dip
 cd $SLURM_SUBMIT_DIR
 
 # Run programmes
-python picalc_multiproc.py 100000000 1
-python picalc_multiproc.py 100000000 2
-python picalc_multiproc.py 100000000 4
-python picalc_multiproc.py 100000000 8
-python picalc_multiproc.py 100000000 12
-python picalc_multiproc.py 100000000 16
-python picalc_multiproc.py 100000000 20
-python picalc_multiproc.py 100000000 24
+for i in {1..24}
+do 
+    python picalc_multiproc.py 100000000 $i 
+done
