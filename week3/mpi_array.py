@@ -19,6 +19,10 @@
 #
 #****************************************************************************
 from mpi4py import MPI
+import os
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 
 ARRAYSIZE = 16000000  # total size of array to process

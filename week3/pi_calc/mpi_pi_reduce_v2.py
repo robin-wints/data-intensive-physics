@@ -14,6 +14,11 @@
 #   Adapted to Python / mpi4py by SH (27/10/18)
 #**********************************************************************
 from mpi4py import MPI
+import os
+import csv
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 
 DARTS = 50000     # number of throws at dartboard
@@ -48,6 +53,9 @@ comm = MPI.COMM_WORLD
 numtasks = comm.Get_size()
 taskid = comm.Get_rank()
 print ("MPI task %d has started..." % taskid)
+
+if (taskid==MASTER):
+    wtime = MPI.Wtime()
 #
 # Set seed for random number generator equal to task ID, to get different
 # random numbers for each task.
@@ -75,8 +83,22 @@ for i in range(ROUNDS):
     if (taskid == MASTER):
         pi = pisum/numtasks
         avepi = ((avepi * i) + pi)/(i + 1)
-        print("   After %8d throws, average value of pi = %10.8f" % (DARTS * (i + 1)*numtasks,avepi))
-
+        #print("   After %8d throws, average value of pi = %10.8f" % (DARTS * (i + 1)*numtasks,avepi))
+        
 if (taskid == MASTER):
+    wtime = MPI.Wtime() - wtime
+
+    filename = './info.csv'
+    exists = os.path.isfile(filename)
+
+    with open(filename, "a", newline="") as f:
+        writer = csv.writer(f)
+
+        if not exists:
+            writer.writerow(['n_tasks', 'pi', 'time'])
+        
+        writer.writerow([numtasks, avepi, wtime])
+
     print ("Real value of PI: 3.1415926535897")
+
 
