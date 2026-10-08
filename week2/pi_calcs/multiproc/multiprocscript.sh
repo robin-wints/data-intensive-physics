@@ -1,6 +1,6 @@
 #!/bin/bash
 # ======================
-# serialscript.sh
+# multiprocscript.sh
 # ======================
 #SBATCH --job-name=test_job
 #SBATCH --partition=teach_cpu
