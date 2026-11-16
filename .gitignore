@@ -1,6 +1,8 @@
 # output files
 *.csv
 *.png
+*.txt
+*.fits
 
 
 # Byte-compiled / optimized / DLL files
