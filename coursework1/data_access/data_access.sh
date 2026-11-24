@@ -10,6 +10,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --time=0:30:0
 #SBATCH --mem=1000M
+#SBATCH --output=data_access/logs/slurm-%j.out
+#SBATCH --error=data_access/logs/slurm-%j.err
 
 # Load modules required for runtime
 source ~/initMamba.sh
@@ -20,4 +22,4 @@ mamba activate euclid
 cd $SLURM_SUBMIT_DIR
 
 # Run programmes
-python data_access.py --login_file ./login.txt --output_dir ./data 
+python data_access/data_access.py --login_file ./login.txt --output_dir ./data 
