@@ -17,8 +17,8 @@ x_0 = random.randint(0, mosaic_size-slice_size)
 # Get cutouts for each band
 cutouts={}
 for path in paths:
-    with fits.open(path, memmap=True) as hdul:
-        cutout = hdul[0].section[y_0:y_0+slice_size, x_0:x_0+slice_size]
+    with fits.open(path, memmap=True) as hdu:
+        cutout = hdu[0].section[y_0:y_0+slice_size, x_0:x_0+slice_size]
         band = path.name.split("MOSAIC-")[1].split("_TILE")[0]
         cutouts[band] = cutout
 
