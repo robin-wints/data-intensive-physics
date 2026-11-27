@@ -26,7 +26,10 @@ for path in paths:
 
 # Plots the 4 bands in a grid to compare
 def grid_plot(cutouts_dir, out_path):
-    fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+    height, width = cutouts_dir['VIS'].shape
+    fig_width = 10
+    fig_height = fig_width * height / width
+    fig, axs = plt.subplots(2, 2, figsize=(fig_width, fig_height))
     for ax, (band, cutout) in zip(axs.ravel(), cutouts_dir.items()):
         norm = ImageNormalize(
             cutout,
@@ -41,7 +44,9 @@ def grid_plot(cutouts_dir, out_path):
 
 # Plots a fake rgb composite image, combining VIS, H and J.
 def rgb_plot(cutouts_dir, out_path):
-    size=len(cutouts_dir['VIS'])
+    height, width = cutouts_dir['VIS'].shape
+    fig_width = 8
+    fig_height = fig_width * height / width
     rgb = make_lupton_rgb(
         cutouts_dir['NIR-H'],
         cutouts_dir['NIR-J'],
@@ -50,9 +55,9 @@ def rgb_plot(cutouts_dir, out_path):
         Q=10,
     )
 
-    fig, ax = plt.subplots(1, 1, figsize=(8,8))
+    fig, ax = plt.subplots(1, 1, figsize=(fig_width, fig_height))
     ax.imshow(rgb, origin='lower')
-    ax.set_title(f'{size} x {size} Pixel Composite Cutout (H-J-VIS)')
+    ax.set_title(f'{width} x {height} Pixel Composite Cutout (H-J-VIS)')
     ax.set_axis_off()
     fig.tight_layout()
     fig.savefig(out_path, dpi=300, bbox_inches='tight')
@@ -60,16 +65,18 @@ def rgb_plot(cutouts_dir, out_path):
 # Plots the image for just one band
 def single_plot(cutouts_dir, band, out_path):
     cutout = cutouts_dir[band]
-    size= len(cutout) 
+    height, width = cutout.shape
+    fig_width = 8
+    fig_height = fig_width * height / width
     norm = ImageNormalize(
         cutout,
         interval=PercentileInterval(99.0),
         stretch=AsinhStretch()
     )
 
-    fig, ax = plt.subplots(1, 1, figsize=(8,8))
+    fig, ax = plt.subplots(1, 1, figsize=(fig_width, fig_height))
     ax.imshow(cutout, norm=norm, cmap='gray', origin='lower')
-    ax.set_title(f'{size} x {size} Pixel {band} Cutout')
+    ax.set_title(f'{width} x {height} Pixel {band} Cutout')
     ax.set_axis_off()
     fig.tight_layout()
     fig.savefig(out_path, dpi=300, bbox_inches='tight')
